@@ -1,8 +1,8 @@
 #include "utils.h"
+#include "interpreter.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-
 
 /**
  * main - entry point of program
@@ -21,7 +21,7 @@ int main(int ac, char **av)
         printf("mouse: requires a source file to parse.\nexiting...\n");
         return 1;
     }
-    if (!(src = fopen(av[1], "r")))
+    if ((src = fopen(av[1], "r")) == NULL)
     {
         printf("mouse: file could not be opened.\nexiting...\n");
         return 1;
@@ -32,8 +32,8 @@ int main(int ac, char **av)
      *   - advantage being it'll be easier to parse and tokenise
      *   - disadvantage being if the file is too big we use up too much mem
      */
-
     file_contents = load_file(src, &contents);
+    begin_interpreter(contents, file_contents);
 
     fclose(src);
     free(contents);
