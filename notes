@@ -1,0 +1,13 @@
+* Mouse can only distinguish whether a number > or <= 0
+
+=== CONDITIONAL STATEMENTS ===
+* Imperative                        * Mouse
+if x > 0 then y = x                 X.[YX.:]
+if x >= 0 then c                    X.1+[C]
+if x = 0 then c                     1X.+[1X.-[C]]
+
+
+ROADMAP
+* start with variables
+    * assign and dereference
+* basic operations
