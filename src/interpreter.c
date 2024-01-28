@@ -6,6 +6,13 @@
 #include <stdio.h>
 
 
+/**
+ * main interpreter loop begins here
+ *
+ * @contents: the source file buffer as a string
+ * @file_len: the length of the file or number of bytes in the source file
+ * @stack: the general stack
+ */
 void begin_interpreter(char *contents, size_t file_len, stack *stack)
 {
     char cur_char = 0;
@@ -23,8 +30,12 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
         /* fix this mess */
         switch (cur_char)
         {
-            case '+': case '*': case '-': case '/':
+            case '+': case '*': case '-': case '/': case '\\':
                 handle_math_operators(cur_char, &stack);
+                break;
+
+            case '!': case '?':
+                handle_io_operators(cur_char, &stack);
                 break;
 
             case ' ': case '\n':
@@ -107,12 +118,23 @@ void handle_math_operators(char c, stack **stack)
             push(*stack, lhs - rhs);
             break;
 
+        case '\\':
+            rhs = pop(*stack), lhs = pop(*stack);
+
+            /* in case the divisor is 0 we throw a division by zero error */
+            if (rhs == 0)
+            {
+                printf("can't divide by zero\n");
+                exit(EXIT_FAILURE);
+            }
+
+            push(*stack, (int)(lhs % rhs));
+            break;
+
         case '/':
             rhs = pop(*stack), lhs = pop(*stack);
 
-            /* in case the divisor is 0
-             * we throw a division by zero error
-             */
+            /* in case the divisor is 0 we throw a division by zero error */
             if (rhs == 0)
             {
                 printf("can't divide by zero\n");
@@ -120,6 +142,25 @@ void handle_math_operators(char c, stack **stack)
             }
 
             push(*stack, (int)(lhs / rhs));
+            break;
+    }
+}
+
+void handle_io_operators(char c, stack **stack)
+{
+    int input = 0;
+    switch(c)
+    {
+        /* operator that writes to stdout */
+        case '!':
+            printf("%d", pop(*stack));
+            break;
+
+        /* operator that reads input from stdin */
+        case '?':
+            input = 0;
+            scanf("%d", &input);
+            push(*stack, input);
             break;
     }
 }
