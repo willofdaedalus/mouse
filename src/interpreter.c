@@ -28,7 +28,6 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
             handle_numbers(&stack, contents, &pos, file_len);
         }
 
-        /* fix this mess */
         switch (cur_char)
         {
             case '+': case '*': case '-': case '/': case '\\':
@@ -155,7 +154,7 @@ void handle_math_operators(char c, stack **stack)
  *
  * @c: the character to check
  * @stack: the general stack
- * @prime: this is true if the next character after the operation is
+ * @prime: this is true if the next character after the operator is
  * an apostrophe. if that's the case, the both output and input are
  * adjusted for characters instead of numbers like default
  */

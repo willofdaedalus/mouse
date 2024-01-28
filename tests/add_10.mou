@@ -1,0 +1,4 @@
+"enter your age: "
+? 10 +
+"you'll be " ! " in 10 years!"
+$
