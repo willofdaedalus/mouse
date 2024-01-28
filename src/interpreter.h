@@ -8,7 +8,7 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack);
 
 /* handlers */
 void handle_math_operators(char cur_char, stack **stack);
-void handle_operators(char cur_char, stack **stack);
+void handle_numbers(stack **stack, char *buf, size_t *cur_pos, size_t len);
 
 
 #endif

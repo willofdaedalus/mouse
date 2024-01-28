@@ -67,7 +67,7 @@ int pop(stack *stack)
      * NB we don't really care about the value ahead because we'll
      * override it on the next push
      */
-    int value = stack->items[stack->cur_stack_size];
+    int value = stack->items[stack->cur_stack_size - 1];
     stack->cur_stack_size -= 1;
 
     return value;

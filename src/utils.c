@@ -44,3 +44,8 @@ size_t load_file(FILE *src, char **buffer)
 	free(buf);
 	return file_size;
 }
+
+bool is_digit(char c)
+{
+    return c >= '0' && c <= '9';
+}
