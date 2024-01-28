@@ -1,1 +1,3 @@
 * the stack overflow value should return an error. check push function for more details
+* the stack underflow value should also return an error. check the pop function for more details
+* there's a division by zero error we need to address
