@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 
-void begin_interpreter(char *contents, size_t file_len)
+void begin_interpreter(char *contents, size_t file_len, stack *stack)
 {
     char cur_char = 0;
     size_t pos = 0;
@@ -40,4 +40,8 @@ void begin_interpreter(char *contents, size_t file_len)
 
         pos++;
     }
+}
+
+void handle_math_operators(char cur_char, size_t *cur_pos)
+{
 }

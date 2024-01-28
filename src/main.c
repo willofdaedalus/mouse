@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "interpreter.h"
+#include "stack.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +16,7 @@ int main(int ac, char **av)
     FILE *src = NULL;
     size_t file_contents = 0;
     char *contents = NULL;
+    stack *global_stack = NULL;
 
     if (ac < 2)
     {
@@ -32,8 +34,10 @@ int main(int ac, char **av)
      *   - advantage being it'll be easier to parse and tokenise
      *   - disadvantage being if the file is too big we use up too much mem
      */
+    global_stack = init_stack();
+
     file_contents = load_file(src, &contents);
-    begin_interpreter(contents, file_contents);
+    begin_interpreter(contents, file_contents, global_stack);
 
     fclose(src);
     free(contents);

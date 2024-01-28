@@ -1,3 +1,3 @@
 #include "globals.h"
 
-int variables[26];
+int g_Variables[MAX_VAR_COUNT];
