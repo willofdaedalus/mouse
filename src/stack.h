@@ -18,6 +18,7 @@
 
 typedef struct 
 {
+    int top; /* this is for debugging purposes only */
     size_t cur_stack_size;
     int items[MAX_STACK_SIZE];
 } stack;

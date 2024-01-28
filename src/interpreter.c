@@ -17,6 +17,7 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
 {
     char cur_char = 0;
     size_t pos = 0;
+    bool prime = false;
 
     while (pos < file_len)
     {
@@ -35,7 +36,10 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
                 break;
 
             case '!': case '?':
-                handle_io_operators(cur_char, &stack);
+                prime = contents[++pos] == '\'';
+                handle_io_operators(cur_char, &stack, prime);
+                /* hack to skip the prime symbol in order to not process it */
+                pos = prime ? pos + 1 : pos - 1;
                 break;
 
             case ' ': case '\n':
@@ -146,21 +150,48 @@ void handle_math_operators(char c, stack **stack)
     }
 }
 
-void handle_io_operators(char c, stack **stack)
+/**
+ * function that handles basic i/o, for both numbers and letters
+ *
+ * @c: the character to check
+ * @stack: the general stack
+ * @prime: this is true if the next character after the operation is
+ * an apostrophe. if that's the case, the both output and input are
+ * adjusted for characters instead of numbers like default
+ */
+void handle_io_operators(char c, stack **stack, bool prime)
 {
-    int input = 0;
+    int from = 0;
     switch(c)
     {
         /* operator that writes to stdout */
         case '!':
-            printf("%d", pop(*stack));
+            if (prime)
+            {
+                /* chose to use printf instead of putchar for single
+                 * character to maintain consistency with %d formatter
+                 */
+                printf("%c", pop(*stack));
+            }
+            else
+            {
+                printf("%d", pop(*stack));
+            }
             break;
 
-        /* operator that reads input from stdin */
+        /* operator that reads from from stdin */
         case '?':
-            input = 0;
-            scanf("%d", &input);
-            push(*stack, input);
+            if (prime)
+            {
+                char character = 0;
+                scanf("%c", &character);
+                push(*stack, (int)character);
+            }
+            else
+            {
+                scanf("%d", &from);
+                push(*stack, from);
+            }
             break;
     }
 }

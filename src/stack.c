@@ -20,6 +20,7 @@ stack *init_stack(void)
         retval->items[i] = 0;
 
     retval->cur_stack_size = 0;
+    retval->top = retval->items[retval->cur_stack_size];
 
     return retval;
 }
@@ -43,6 +44,7 @@ void push(stack *stack, int value)
      * and increment the current stack size
      */
     stack->items[stack->cur_stack_size] = value;
+    stack->top = stack->items[stack->cur_stack_size];
     stack->cur_stack_size += 1;
 }
 
@@ -68,6 +70,7 @@ int pop(stack *stack)
      * override it on the next push
      */
     int value = stack->items[stack->cur_stack_size - 1];
+    stack->top = stack->items[stack->cur_stack_size - 1];
     stack->cur_stack_size -= 1;
 
     return value;
