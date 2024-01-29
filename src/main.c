@@ -40,6 +40,7 @@ int main(int ac, char **av)
     begin_interpreter(contents, file_contents, global_stack);
 
     fclose(src);
+    free(global_stack);
     free(contents);
     return 0;
 }

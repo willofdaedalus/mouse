@@ -47,6 +47,11 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
                 pos += 1; /* this might be problematic */
                 continue;
 
+            case '\'':
+                pos++;
+                push(stack, (int)contents[pos]);
+                break;
+
             case '"':
                 pos++; /* skip the current character to read from the next */
                 while (contents[pos] != '"')
@@ -59,9 +64,6 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
                     pos++;
                 }
                 break;
-
-            case '$':
-                return;
 
             default:
                 continue;
@@ -76,7 +78,7 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
  * function that "builds" a number
  *
  * @stack: the stack to push the number into
- * @cur_char: the character to check
+ * @buf: the source file buffer; needed to read to the rest of the numbers
  * @cur_pos: the current position in the source file buffer
  * @file_size: needed to ensure we don't read past the source file's length
  */
