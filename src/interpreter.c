@@ -15,13 +15,15 @@
  */
 void begin_interpreter(char *contents, size_t file_len, stack *stack)
 {
-    char cur_char = 0;
-    size_t pos = 0;
+    char cur_char = 0, look_ahead = 0;
+    size_t pos = 0, ahead_pos = 1;
     bool prime = false;
 
-    while (pos < file_len)
+    while (cur_char != '$')
     {
+        prime = false;
         cur_char = contents[pos];
+        look_ahead = contents[pos + 1];
 
         if (is_digit(cur_char))
         {
@@ -35,10 +37,10 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
                 break;
 
             case '!': case '?':
-                prime = contents[++pos] == '\'';
+                prime = look_ahead == '\'';
                 handle_io_operators(cur_char, &stack, prime);
                 /* hack to skip the prime symbol in order to not process it */
-                pos = prime ? pos + 1 : pos - 1;
+                pos += prime;
                 break;
 
             case ' ': case '\n':
@@ -66,6 +68,7 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
         }
 
         pos++;
+        ahead_pos++;
     }
 }
 
@@ -183,12 +186,15 @@ void handle_io_operators(char c, stack **stack, bool prime)
             if (prime)
             {
                 char character = 0;
-                scanf("%c", &character);
+                 /* Good God I love this language lol
+                 * https://stackoverflow.com/a/69587510
+                 */
+                scanf(" %c", &character);
                 push(*stack, (int)character);
             }
             else
             {
-                scanf("%d", &from);
+                scanf(" %d", &from);
                 push(*stack, from);
             }
             break;

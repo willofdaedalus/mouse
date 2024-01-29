@@ -1,1 +1,4 @@
-"this is the numbers test!"1245 1289 903$
+"this program calculates two numbers!enter the first number: " ?
+"enter the second number: " ?
+"your two numbers plus each other is " + !
+$
