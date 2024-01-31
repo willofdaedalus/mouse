@@ -1,6 +1,6 @@
 #include "utils.h"
+#include "environment.h"
 #include "interpreter.h"
-#include "stack.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +16,7 @@ int main(int ac, char **av)
     FILE *src = NULL;
     size_t file_contents = 0;
     char *contents = NULL;
-    stack *global_stack = NULL;
+    environment *global_env = NULL;
 
     if (ac < 2)
     {
@@ -34,13 +34,14 @@ int main(int ac, char **av)
      *   - advantage being it'll be easier to parse and tokenise
      *   - disadvantage being if the file is too big we use up too much mem
      */
-    global_stack = init_stack();
+
+    global_env = init_env();
 
     file_contents = load_file(src, &contents);
-    begin_interpreter(contents, file_contents, global_stack);
+    begin_interpreter(contents, file_contents, global_env);
 
     fclose(src);
-    free(global_stack);
+    free_env(global_env);
     free(contents);
     return 0;
 }

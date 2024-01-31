@@ -1,7 +1,43 @@
-#include "stack.h"
+#include "environment.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+
+
+environment *init_env(void)
+{
+    environment *env = malloc(sizeof(environment));
+    if (env == NULL)
+    {
+        printf("go hard or go home; malloc failed in init_environment\n");
+        exit(EXIT_FAILURE);
+    }
+
+    env->stack = init_stack();
+    for (int i = 0; i < MAX_VARIALE_SIZE; i++)
+        env->variables[i] = 0;
+
+    return env;
+}
+
+void free_env(environment *env)
+{
+    if (env == NULL)
+    {
+        printf("rest easy; environment uninitialised\n");
+        return;
+    }
+
+    /* we don't really need to do this but I just want to */
+    for (int i = 0; i < MAX_STACK_SIZE; i++)
+        env->stack->items[i] = 0;
+
+    for (int i = 0; i < MAX_VARIALE_SIZE; i++)
+        env->variables[i] = 0;
+
+    free(env->stack);
+    free(env);
+}
 
 /**
  * init_stack - initialises a stack structure to default values

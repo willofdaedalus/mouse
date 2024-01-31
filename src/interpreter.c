@@ -1,5 +1,4 @@
 #include "interpreter.h"
-#include "stack.h"
 #include "utils.h"
 
 #include <stdlib.h>
@@ -13,7 +12,7 @@
  * @file_len: the length of the file or number of bytes in the source file
  * @stack: the general stack
  */
-void begin_interpreter(char *contents, size_t file_len, stack *stack)
+void begin_interpreter(char *contents, size_t file_len, environment *env)
 {
     char cur_char = 0, look_ahead = 0;
     size_t pos = 0, ahead_pos = 1;
@@ -27,20 +26,20 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
 
         if (is_digit(cur_char))
         {
-            handle_numbers(&stack, contents, &pos, file_len);
+            handle_numbers(&env->stack, contents, &pos, file_len);
         }
+
 
         switch (cur_char)
         {
             case '+': case '*': case '-': case '/': case '\\':
-                handle_math_operators(cur_char, &stack);
+                handle_math_operators(cur_char, &env->stack);
                 break;
 
             case '!': case '?':
                 prime = look_ahead == '\'';
-                handle_io_operators(cur_char, &stack, prime);
-                /* hack to skip the prime symbol in order to not process it */
-                pos += prime;
+                handle_io_operators(cur_char, &env->stack, prime);
+                pos += prime; /* skip the prime if it's present */
                 break;
 
             case ' ': case '\n':
@@ -49,7 +48,7 @@ void begin_interpreter(char *contents, size_t file_len, stack *stack)
 
             case '\'':
                 pos++;
-                push(stack, (int)contents[pos]);
+                push(env->stack, (int)contents[pos]);
                 break;
 
             case '"':

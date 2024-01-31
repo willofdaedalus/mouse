@@ -1,12 +1,12 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
-#include "stack.h"
+#include "environment.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
 
-void begin_interpreter(char *contents, size_t file_len, stack *stack);
+void begin_interpreter(char *contents, size_t file_len, environment *env);
 
 /* handlers */
 void handle_math_operators(char cur_char, stack **stack);

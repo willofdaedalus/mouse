@@ -45,6 +45,11 @@ size_t load_file(FILE *src, char **buffer)
 	return file_size;
 }
 
+bool is_variable(char c)
+{
+    return c >= 'A' && c <= 'Z';
+}
+
 bool is_digit(char c)
 {
     return c >= '0' && c <= '9';

@@ -14,7 +14,8 @@
 
 #include <stdlib.h>
 
-#define MAX_STACK_SIZE                      32
+#define MAX_STACK_SIZE                          32
+#define MAX_VARIALE_SIZE                        26
 
 typedef struct 
 {
@@ -23,6 +24,15 @@ typedef struct
     int items[MAX_STACK_SIZE];
 } stack;
 
+typedef struct
+{
+    stack *stack;
+    int variables[MAX_VARIALE_SIZE];
+} environment;
+
+
+environment *init_env(void);
+void free_env(environment *env);
 stack *init_stack(void);
 void push(stack *stack, int value);
 int pop(stack *stack);
