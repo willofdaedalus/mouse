@@ -14,9 +14,17 @@
 
 #include <stdlib.h>
 
-#define MAX_STACK_SIZE                          32
-#define MAX_VARIALE_SIZE                        26
+#define MAX_STACK_SIZE                              32
+#define MAX_VARIABLE_SIZE                           26
 
+/**
+ * stack struct that keeps track of the global stack in use during programs
+ * 
+ * @cur_stack_size: the current number of items in the stack currently to
+ * check for possible overflows and underflows when popping and pushing
+ * values
+ * @items; an array used to represent the stack
+ */
 typedef struct 
 {
     int top; /* this is for debugging purposes only */
@@ -24,10 +32,19 @@ typedef struct
     int items[MAX_STACK_SIZE];
 } stack;
 
+
+/**
+ * environment contains necessary information needed during the execution
+ * and running of programs in the mouse language
+ *
+ * @stack: a pointer to a stack struct
+ * @variables: the global array of variables allowed in the program;
+ * indicated by the MAX_VARIABLE_SIZE preprocessor
+ */
 typedef struct
 {
     stack *stack;
-    int variables[MAX_VARIALE_SIZE];
+    int variables[MAX_VARIABLE_SIZE];
 } environment;
 
 

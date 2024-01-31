@@ -4,6 +4,9 @@
 #include <stdlib.h>
 
 
+/**
+ * initialise the environment struct
+ */
 environment *init_env(void)
 {
     environment *env = malloc(sizeof(environment));
@@ -14,12 +17,17 @@ environment *init_env(void)
     }
 
     env->stack = init_stack();
-    for (int i = 0; i < MAX_VARIALE_SIZE; i++)
+    for (int i = 0; i < MAX_VARIABLE_SIZE; i++)
         env->variables[i] = 0;
 
     return env;
 }
 
+/**
+ * frees the environment struct any data that was requested during runtime
+ *
+ * @env: the environment instance
+ */
 void free_env(environment *env)
 {
     if (env == NULL)
@@ -32,7 +40,7 @@ void free_env(environment *env)
     for (int i = 0; i < MAX_STACK_SIZE; i++)
         env->stack->items[i] = 0;
 
-    for (int i = 0; i < MAX_VARIALE_SIZE; i++)
+    for (int i = 0; i < MAX_VARIABLE_SIZE; i++)
         env->variables[i] = 0;
 
     free(env->stack);
