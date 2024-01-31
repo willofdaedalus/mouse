@@ -15,7 +15,8 @@
 #include <stdlib.h>
 
 #define MAX_STACK_SIZE                              32
-#define MAX_VARIABLE_SIZE                           26
+#define MAX_VARIABLE_SIZE                           130
+#define ASCII_OFFSET                                65
 
 /**
  * stack struct that keeps track of the global stack in use during programs

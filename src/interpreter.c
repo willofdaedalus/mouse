@@ -1,6 +1,8 @@
 #include "interpreter.h"
+#include "environment.h"
 #include "utils.h"
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -29,9 +31,20 @@ void begin_interpreter(char *contents, size_t file_len, environment *env)
             handle_numbers(&env->stack, contents, &pos, file_len);
         }
 
+        if (cur_char >= 'A' && cur_char <= 'Z')
+        {
+            int value = cur_char - ASCII_OFFSET;
+            push(env->stack, value);
+            pos++;
+        }
+
 
         switch (cur_char)
         {
+            case ':': case '.':
+                handle_alloc_operators(cur_char, &env);
+                break;
+
             case '+': case '*': case '-': case '/': case '\\':
                 handle_math_operators(cur_char, &env->stack);
                 break;
@@ -198,6 +211,40 @@ void handle_io_operators(char c, stack **stack, bool prime)
                 scanf(" %d", &from);
                 push(*stack, from);
             }
+            break;
+    }
+}
+
+/**
+ * this handles assignment and dereference operators
+ *
+ * @cur_char: is the character that matches any of the operators
+ * @env: the environment we're executing in
+ */
+void handle_alloc_operators(char cur_char, environment **env)
+{
+    environment *cur_env = (*env);
+    int variable = 0, value = 0;
+
+    switch(cur_char)
+    {
+        /* assignment operator takes the address of a variable and pushes
+         * a new value to the space it occupies
+         */
+        case ':':
+            /* pop two items; the variable and the value
+             * assign the variable with the value that was popped
+             */
+            variable = pop(cur_env->stack);
+            value = pop(cur_env->stack);
+
+            cur_env->variables[variable] = value;
+            break;
+
+        /* dereference operator gets the value stored at the variable */
+        case '.':
+            variable = pop(cur_env->stack);
+            push(cur_env->stack, cur_env->variables[variable]);
             break;
     }
 }
