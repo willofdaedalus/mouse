@@ -278,7 +278,7 @@ void handle_comparison(char c, stack **stack)
 
 void skip_to(const char *buf, size_t *pos, char to)
 {
-    while (buf[*pos] != EOF || buf[*pos] != to)
+    while (buf[*pos] != to)
     {
         *pos += 1;
     }
