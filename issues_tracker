@@ -1,6 +1,16 @@
+ISSUES
 * the stack overflow value should return an error. check push function for more details
 * the stack underflow value should also return an error. check the pop function for more details
 * there's a division by zero error we need to address
 * remember to remove the top variable from the stack struct;
+* there might be a situation where skip_to won't finding a closing to while scanning. make sure to
+  account for that situation as well
+*
+
+
+
+
+COMPLETED
 * conditions within conditions might be a thing so make sure the skip function accounts for situations
   like this A.[ B. [+3]] in that it skips to the last ]
+

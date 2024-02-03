@@ -39,11 +39,11 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
 
         switch (c)
         {
-            case '~':
+            case '~':   /* comment operator */
                 skip_to(contents, &pos, '\n');
                 break;
 
-            case '[':
+            case '[':   /* conditional operator */
                 if (pop(env->stack) <= 0)
                 {
                     skip_to(contents, &pos, ']');
@@ -258,6 +258,12 @@ void handle_alloc(char c, environment **env)
     }
 }
 
+/**
+ * comparison handlers 
+ *
+ * @c: the character we encountered
+ * @stack: to pop and push to the global stack
+ */
 void handle_comparison(char c, stack **stack)
 {
     int rhs = pop(*stack), lhs = pop(*stack);
@@ -276,10 +282,47 @@ void handle_comparison(char c, stack **stack)
     }
 }
 
+/**
+ * skips to the character specified by @to while keeping tracking
+ * how many times the character occurs in order to skip the right
+ * number of times
+ *
+ * @buf: the source file
+ * @pos: a pointer to the current position within the interpreter
+ * @to: the character to skip to
+ */
 void skip_to(const char *buf, size_t *pos, char to)
 {
-    while (buf[*pos] != to)
+    char from = buf[*pos]; /* the starting character */
+    int found = 1;
+    int err = 0;
+
+    /* keep track of the number of froms we've found and increment
+     * or decrement this value as necessary. take this example for instace
+     * [[[]]]
+     * this should track 3 [ and 3 ] and skip to the last ] based on the count
+     * of [
+     */
+    while (found != 0)
     {
         *pos += 1;
+        if (buf[*pos] == from)              found += 1;
+        else if (buf[*pos] == to)           found -= 1;
+        
+        /* in the event that we don't find matching brackets but we're at the
+         * end of the file, we simply break the loop before we get hit with
+         * the segfault
+         */
+        else if (buf[*pos] == '$') 
+        {
+            err = 1;
+            break;
+        }
+    }
+
+    if (err == 1)
+    {
+        printf("incomplete number of brackets\n");
+        exit(EXIT_FAILURE);
     }
 }
