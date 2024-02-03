@@ -70,11 +70,12 @@ stack *init_stack(void)
 }
 
 /**
- * push - pushes a value onto the stack
+ * pushes a value onto the stack
+ *
  * @stack: the stack to push the value on
  * @value: the value to push
  */
-void push(stack *stack, int value)
+void push(stack *stack, const int value)
 {
     /* check for a possible stack overflow */
     if (stack->cur_stack_size == MAX_STACK_SIZE)
@@ -93,9 +94,9 @@ void push(stack *stack, int value)
 }
 
 /**
- * pop - pop removes and returns the top value of the stack
- * @stack: the stack t pop the value from
+ * pop removes and returns the top value of the stack
  *
+ * @stack: the stack t pop the value from
  * Return: returns the top value and removes it from the stack
  */
 int pop(stack *stack)

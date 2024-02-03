@@ -1,3 +1,4 @@
+~ "this line is a comment and won't run" ?
 "this program calculates two numbers!enter the first number: " ?
 "enter the second number: " ?
 "your two numbers plus each other is " + !

@@ -6,13 +6,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void begin_interpreter(char *contents, size_t file_len, environment *env);
+void begin_interpreter(const char *contents, size_t file_len, environment *env);
 
 /* handlers */
-void handle_alloc_operators(char cur_char, environment **env);
-void handle_math_operators(char cur_char, stack **stack);
-void handle_io_operators(char c, stack **stack, bool input);
-void handle_numbers(stack **stack, char *buf, size_t *cur_pos, size_t len);
+void handle_alloc(const char c, environment **env);
+void skip_to(const char *buf, size_t *pos, char to);
+void handle_comparison(const char c, stack **stack);
+void handle_math(const char c, stack **stack);
+void handle_io(const char c, stack **stack, bool input);
+void handle_digits(const char *buf, stack **stack, size_t *cur_pos, size_t len);
 
 
 #endif

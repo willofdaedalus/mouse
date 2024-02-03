@@ -52,7 +52,7 @@ typedef struct
 environment *init_env(void);
 void free_env(environment *env);
 stack *init_stack(void);
-void push(stack *stack, int value);
+void push(stack *stack, const int value);
 int pop(stack *stack);
 
 

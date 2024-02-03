@@ -14,44 +14,60 @@
  * @file_len: the length of the file or number of bytes in the source file
  * @stack: the general stack
  */
-void begin_interpreter(char *contents, size_t file_len, environment *env)
+void begin_interpreter(const char *contents, size_t file_len, environment *env)
 {
-    char cur_char = 0, look_ahead = 0;
-    size_t pos = 0, ahead_pos = 1;
+    char c = 0;
+    size_t pos = 0;
     bool prime = false;
 
-    while (cur_char != '$')
+    while (c != '$')
     {
         prime = false;
-        cur_char = contents[pos];
-        look_ahead = contents[pos + 1];
+        c = contents[pos];
 
-        if (is_digit(cur_char))
+        if (isdigit(c))
         {
-            handle_numbers(&env->stack, contents, &pos, file_len);
+            handle_digits(contents, &env->stack, &pos, file_len);
         }
 
-        if (cur_char >= 'A' && cur_char <= 'Z')
+        if (c >= 'A' && c <= 'Z')
         {
-            int value = cur_char - ASCII_OFFSET;
+            int value = c - ASCII_OFFSET;
             push(env->stack, value);
             pos++;
         }
 
-
-        switch (cur_char)
+        switch (c)
         {
+            case '~':
+                skip_to(contents, &pos, '\n');
+                break;
+
+            case '[':
+                if (pop(env->stack) <= 0)
+                {
+                    skip_to(contents, &pos, ']');
+                }
+                break;
+
+            case ']':
+                break;
+
+            case '<': case '=': case '>':
+                handle_comparison(c, &env->stack);
+                break;
+
             case ':': case '.':
-                handle_alloc_operators(cur_char, &env);
+                handle_alloc(c, &env);
                 break;
 
             case '+': case '*': case '-': case '/': case '\\':
-                handle_math_operators(cur_char, &env->stack);
+                handle_math(c, &env->stack);
                 break;
 
             case '!': case '?':
-                prime = look_ahead == '\'';
-                handle_io_operators(cur_char, &env->stack, prime);
+                prime = (contents[pos + 1] == '\'');
+                handle_io(c, &env->stack, prime);
                 pos += prime; /* skip the prime if it's present */
                 break;
 
@@ -82,7 +98,6 @@ void begin_interpreter(char *contents, size_t file_len, environment *env)
         }
 
         pos++;
-        ahead_pos++;
     }
 }
 
@@ -91,17 +106,20 @@ void begin_interpreter(char *contents, size_t file_len, environment *env)
  *
  * @stack: the stack to push the number into
  * @buf: the source file buffer; needed to read to the rest of the numbers
- * @cur_pos: the current position in the source file buffer
+ * @pos: the current position in the source file buffer
  * @file_size: needed to ensure we don't read past the source file's length
  */
-void handle_numbers(stack **stack, char *buf, size_t *cur_pos, size_t len)
+void handle_digits(const char *buf, stack **stack, size_t *pos, size_t len)
 {
     int temp = 0;
 
-    while (is_digit(buf[*cur_pos]) && *cur_pos < len)
+    /* so long as we haven't hit the end of the buffer and the current
+     * character is still a digit we continue parsing
+     */
+    while (isdigit(buf[*pos]) && *pos < len)
     {
-        temp = temp * 10 + (buf[*cur_pos] - '0');
-        *cur_pos += 1;
+        temp = temp * 10 + (buf[*pos] - '0');
+        *pos += 1;
     }
 
     push(*stack, temp);
@@ -110,12 +128,12 @@ void handle_numbers(stack **stack, char *buf, size_t *cur_pos, size_t len)
 /**
  * handles math operators that appear while interpreting the file
  *
- * @cur_char: the char that is checked
+ * @c: the char that is checked
  * @stack: a pointer to the current stack
  */
-void handle_math_operators(char c, stack **stack)
+void handle_math(const char c, stack **stack)
 {
-    int lhs = 0, rhs = 0;
+    int rhs = pop(*stack), lhs = pop(*stack);
 
     /* aside the commutative properties of * and + the others
      * need special checks to make sure they function the way
@@ -124,23 +142,18 @@ void handle_math_operators(char c, stack **stack)
     switch(c)
     {
         case '+':
-            rhs = pop(*stack), lhs = pop(*stack);
             push(*stack, lhs + rhs);
             break;
 
         case '*':
-            rhs = pop(*stack), lhs = pop(*stack);
             push(*stack, lhs * rhs);
             break;
 
         case '-':
-            rhs = pop(*stack), lhs = pop(*stack);
             push(*stack, lhs - rhs);
             break;
 
         case '\\':
-            rhs = pop(*stack), lhs = pop(*stack);
-
             /* in case the divisor is 0 we throw a division by zero error */
             if (rhs == 0)
             {
@@ -152,8 +165,6 @@ void handle_math_operators(char c, stack **stack)
             break;
 
         case '/':
-            rhs = pop(*stack), lhs = pop(*stack);
-
             /* in case the divisor is 0 we throw a division by zero error */
             if (rhs == 0)
             {
@@ -175,7 +186,7 @@ void handle_math_operators(char c, stack **stack)
  * an apostrophe. if that's the case, the both output and input are
  * adjusted for characters instead of numbers like default
  */
-void handle_io_operators(char c, stack **stack, bool prime)
+void handle_io(char c, stack **stack, bool prime)
 {
     int from = 0;
     switch(c)
@@ -218,26 +229,24 @@ void handle_io_operators(char c, stack **stack, bool prime)
 /**
  * this handles assignment and dereference operators
  *
- * @cur_char: is the character that matches any of the operators
+ * @c: is the character that matches any of the operators
  * @env: the environment we're executing in
  */
-void handle_alloc_operators(char cur_char, environment **env)
+void handle_alloc(char c, environment **env)
 {
     environment *cur_env = (*env);
     int variable = 0, value = 0;
 
-    switch(cur_char)
+    switch(c)
     {
         /* assignment operator takes the address of a variable and pushes
          * a new value to the space it occupies
          */
         case ':':
+            variable = pop(cur_env->stack), value = pop(cur_env->stack);
             /* pop two items; the variable and the value
              * assign the variable with the value that was popped
              */
-            variable = pop(cur_env->stack);
-            value = pop(cur_env->stack);
-
             cur_env->variables[variable] = value;
             break;
 
@@ -246,5 +255,31 @@ void handle_alloc_operators(char cur_char, environment **env)
             variable = pop(cur_env->stack);
             push(cur_env->stack, cur_env->variables[variable]);
             break;
+    }
+}
+
+void handle_comparison(char c, stack **stack)
+{
+    int rhs = pop(*stack), lhs = pop(*stack);
+
+    switch(c)
+    {
+        case '>':
+            push(*stack, (lhs > rhs) ? 1 : 0);
+            break;
+        case '<':
+            push(*stack, (lhs < rhs) ? 1 : 0);
+            break;
+        case '=':
+            push(*stack, (lhs == rhs) ? 1 : 0);
+            break;
+    }
+}
+
+void skip_to(const char *buf, size_t *pos, char to)
+{
+    while (buf[*pos] != EOF || buf[*pos] != to)
+    {
+        *pos += 1;
     }
 }

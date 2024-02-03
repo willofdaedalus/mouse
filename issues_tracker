@@ -2,3 +2,5 @@
 * the stack underflow value should also return an error. check the pop function for more details
 * there's a division by zero error we need to address
 * remember to remove the top variable from the stack struct;
+* conditions within conditions might be a thing so make sure the skip function accounts for situations
+  like this A.[ B. [+3]] in that it skips to the last ]
