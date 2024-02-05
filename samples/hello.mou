@@ -1,0 +1,5 @@
+~ prints the classic hello world program
+
+"Hello, World" 33 !'            ~ pushing 33 prints an exclamation mark
+"!"                             ~ prints the newline character
+$                               ~ end of program

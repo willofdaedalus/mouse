@@ -43,6 +43,10 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
                 skip_to(contents, &pos, '\n');
                 break;
 
+            case '(':
+                handle_loop(contents, &pos, &env);
+                break;
+
             case '[':   /* conditional operator */
                 if (pop(env->stack) <= 0)
                 {
@@ -313,7 +317,7 @@ void skip_to(const char *buf, size_t *pos, char to)
          * end of the file, we simply break the loop before we get hit with
          * the segfault
          */
-        else if (buf[*pos] == '$') 
+        else if (buf[*pos] == '\0') 
         {
             err = 1;
             break;
@@ -325,4 +329,12 @@ void skip_to(const char *buf, size_t *pos, char to)
         printf("incomplete number of brackets\n");
         exit(EXIT_FAILURE);
     }
+}
+
+
+void handle_loop(const char *buf, size_t *pos, environment **env)
+{
+    /** save the position of the character for easier comeback
+     * run whatever is in the loop  pv
+     */
 }

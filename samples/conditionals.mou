@@ -1,0 +1,9 @@
+~ this program decides if a person can vote based on their age
+
+2024 A:                                                                     ~ store the current year
+"Enter your birth year to check your voting eligibility: " ?B:              ~ store the user's birth year
+B. 1940 < ["Please enter a valid birth year!" $]                            ~ prompt the user to enter a valid year and exit
+B. A. > ["Please enter a valid birth year!" $]                              ~ prompt the user to enter a valid year and exit
+A. B. - C:                                                                  ~ the user's age
+C. 18 < ["You're too young wait " 18 C. - ! " years before you can vote"]   ~ check the user's age against 18
+C. 18 > ["You can vote. Please vote wisely!"]                               ~ same as above

@@ -1,0 +1,7 @@
+~ this takes the birth year of the user and calculates their age
+
+2024 A:                                                 ~ assign the current year to variable A
+"Please enter the year you were born: "  ? B:            ~ reads the users year and assigns it to B
+A. B. - C:                                              ~ subtract the user's birth year from the current year
+"You're " C.! " years old based on your year.!"         ~ print the result of the user's year
+$
