@@ -9,8 +9,8 @@
  * Based on that I've decided to make the stack an array of items with a count
  * https://en.wikipedia.org/wiki/Stack_(abstract_data_type)
  */
-#ifndef STACK_H
-#define STACK_H
+#ifndef ENVIRONMENT_H
+#define ENVIRONMENT_H
 
 #include <stdlib.h>
 
@@ -39,12 +39,14 @@ typedef struct
  * and running of programs in the mouse language
  *
  * @stack: a pointer to a stack struct
+ * @loop_stack: keeps track of the depth in a loop; think of a loop within a loop
  * @variables: the global array of variables allowed in the program;
  * indicated by the MAX_VARIABLE_SIZE preprocessor
  */
 typedef struct
 {
-    stack *stack;
+    stack *global_stack;
+    stack *loop_stack;
     int variables[MAX_VARIABLE_SIZE];
 } environment;
 

@@ -27,20 +27,20 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
 
         if (isdigit(c))
         {
-            handle_digits(contents, &env->stack, &pos, file_len);
+            handle_digits(contents, &env->global_stack, &pos, file_len);
         }
 
         if (c >= 'A' && c <= 'Z')
         {
             int value = c - ASCII_OFFSET;
-            push(env->stack, value);
+            push(env->global_stack, value);
             pos++;
         }
 
         switch (c)
         {
             case '~':   /* comment operator */
-                skip_to(contents, &pos, '\n');
+                skip_to(contents, &pos, 0, '\n');
                 break;
 
             case '(':
@@ -48,9 +48,9 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
                 break;
 
             case '[':   /* conditional operator */
-                if (pop(env->stack) <= 0)
+                if (pop(env->global_stack) <= 0)
                 {
-                    skip_to(contents, &pos, ']');
+                    skip_to(contents, &pos, '[', ']');
                 }
                 break;
 
@@ -58,7 +58,7 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
                 break;
 
             case '<': case '=': case '>':
-                handle_comparison(c, &env->stack);
+                handle_comparison(c, &env->global_stack);
                 break;
 
             case ':': case '.':
@@ -66,12 +66,12 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
                 break;
 
             case '+': case '*': case '-': case '/': case '\\':
-                handle_math(c, &env->stack);
+                handle_math(c, &env->global_stack);
                 break;
 
             case '!': case '?':
                 prime = (contents[pos + 1] == '\'');
-                handle_io(c, &env->stack, prime);
+                handle_io(c, &env->global_stack, prime);
                 pos += prime; /* skip the prime if it's present */
                 break;
 
@@ -81,7 +81,7 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
 
             case '\'':
                 pos++;
-                push(env->stack, (int)contents[pos]);
+                push(env->global_stack, (int)contents[pos]);
                 break;
 
             case '"':
@@ -247,7 +247,7 @@ void handle_alloc(char c, environment **env)
          * a new value to the space it occupies
          */
         case ':':
-            variable = pop(cur_env->stack), value = pop(cur_env->stack);
+            variable = pop(cur_env->global_stack), value = pop(cur_env->global_stack);
             /* pop two items; the variable and the value
              * assign the variable with the value that was popped
              */
@@ -256,8 +256,8 @@ void handle_alloc(char c, environment **env)
 
         /* dereference operator gets the value stored at the variable */
         case '.':
-            variable = pop(cur_env->stack);
-            push(cur_env->stack, cur_env->variables[variable]);
+            variable = pop(cur_env->global_stack);
+            push(cur_env->global_stack, cur_env->variables[variable]);
             break;
     }
 }
@@ -295,9 +295,8 @@ void handle_comparison(char c, stack **stack)
  * @pos: a pointer to the current position within the interpreter
  * @to: the character to skip to
  */
-void skip_to(const char *buf, size_t *pos, char to)
+void skip_to(const char *buf, size_t *pos, const char from, const char to)
 {
-    char from = buf[*pos]; /* the starting character */
     int found = 1;
     int err = 0;
 
@@ -334,6 +333,8 @@ void skip_to(const char *buf, size_t *pos, char to)
 
 void handle_loop(const char *buf, size_t *pos, environment **env)
 {
+    (void)buf;
+    push((*env)->loop_stack, *pos);
     /** save the position of the character for easier comeback
      * run whatever is in the loop  pv
      */

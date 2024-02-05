@@ -16,9 +16,12 @@ environment *init_env(void)
         exit(EXIT_FAILURE);
     }
 
-    env->stack = init_stack();
+    env->global_stack = init_stack();
+    env->loop_stack = init_stack();
     for (int i = 0; i < MAX_VARIABLE_SIZE; i++)
+    {
         env->variables[i] = 0;
+    }
 
     return env;
 }
@@ -38,12 +41,15 @@ void free_env(environment *env)
 
     /* we don't really need to do this but I just want to */
     for (int i = 0; i < MAX_STACK_SIZE; i++)
-        env->stack->items[i] = 0;
+    {
+        env->global_stack->items[i] = 0;
+        env->loop_stack->items[i] = 0;
+    }
 
     for (int i = 0; i < MAX_VARIABLE_SIZE; i++)
         env->variables[i] = 0;
 
-    free(env->stack);
+    free(env->global_stack);
     free(env);
 }
 
