@@ -44,7 +44,18 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
                 break;
 
             case '(':
-                handle_loop(contents, &pos, &env);
+                push(env->loop_stack, pos);
+                break;
+
+            case '^':
+                if (pop(env->global_stack) <= 0)
+                {
+                    skip_to(contents, &pos, '(', ')');
+                }
+                break;
+
+            case ')':
+                pos = pop(env->loop_stack) - 1;
                 break;
 
             case '[':   /* conditional operator */
