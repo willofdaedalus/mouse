@@ -7,3 +7,4 @@ B. A. > ["Please enter a valid birth year!" $]                              ~ pr
 A. B. - C:                                                                  ~ the user's age
 C. 18 < ["You're too young wait " 18 C. - ! " years before you can vote"]   ~ check the user's age against 18
 C. 18 > ["You can vote. Please vote wisely!"]                               ~ same as above
+$

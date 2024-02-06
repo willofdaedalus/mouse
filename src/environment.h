@@ -18,6 +18,8 @@
 #define MAX_VARIABLE_SIZE                           130
 #define ASCII_OFFSET                                65
 
+extern int shell_mode;
+
 /**
  * stack struct that keeps track of the global stack in use during programs
  * 

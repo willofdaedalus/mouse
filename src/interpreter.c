@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+int shell_mode = 0;
 
 /**
  * main interpreter loop begins here
@@ -14,13 +15,19 @@
  * @file_len: the length of the file or number of bytes in the source file
  * @stack: the general stack
  */
-void begin_interpreter(const char *contents, size_t file_len, environment *env)
+void begin_interpreter(const char *contents, size_t file_len, environment *env, int shell)
 {
+    shell_mode = shell;
+    /* this char will determine what is the 'ending' point for the interpreter
+     * depending on if it's called from the shell or if it's called from
+     * a file loaded into memory
+     */
+    char sentinel_value = shell_mode == 1 ? '\n' : '$';
     char c = 0;
     size_t pos = 0;
     bool prime = false;
 
-    while (c != '$')
+    while (c != sentinel_value)
     {
         prime = false;
         c = contents[pos];

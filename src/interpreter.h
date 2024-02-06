@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void begin_interpreter(const char *contents, size_t file_len, environment *env);
+void begin_interpreter(const char *contents, size_t file_len, environment *env, int shell);
 
 /* handlers */
 void handle_alloc(const char c, environment **env);

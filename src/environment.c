@@ -110,6 +110,10 @@ int pop(stack *stack)
     /* check for a possible stack underflow */
     if (stack->cur_stack_size == 0)
     {
+        if (shell_mode == 1)
+        {
+            printf("running in shell mode\n");
+        }
         printf("this should be an error for stack underflow\n");
         exit(EXIT_FAILURE);
     }

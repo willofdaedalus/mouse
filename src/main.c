@@ -1,6 +1,7 @@
-#include "utils.h"
 #include "environment.h"
 #include "interpreter.h"
+#include "shell.h"
+#include "utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,29 +25,31 @@ int main(int ac, char **av)
 
     if (ac < 2)
     {
-        printf("mouse: requires a source file to parse.\nexiting...\n");
-        return 1;
+        init_shell();
     }
-    if ((src = fopen(av[1], "r")) == NULL)
+    else
     {
-        printf("mouse: file could not be opened.\nexiting...\n");
-        return 1;
+        if ((src = fopen(av[1], "r")) == NULL)
+        {
+            printf("mouse: file could not be opened.\nexiting...\n");
+            return 1;
+        }
+
+        /* load the contents of the file into memory
+         * - this has both advantages and disadvantages
+         *   - advantage being it'll be easier to parse and tokenise
+         *   - disadvantage being if the file is too big we use up too much mem
+         */
+
+        global_env = init_env();
+
+        file_contents = load_file(src, &contents);
+        begin_interpreter(contents, file_contents, global_env, 0);
+
+        fclose(src);
+        free_env(global_env);
+        free(contents);
     }
-
-    /* load the contents of the file into memory
-     * - this has both advantages and disadvantages
-     *   - advantage being it'll be easier to parse and tokenise
-     *   - disadvantage being if the file is too big we use up too much mem
-     */
-
-    global_env = init_env();
-
-    file_contents = load_file(src, &contents);
-    begin_interpreter(contents, file_contents, global_env);
-
-    fclose(src);
-    free_env(global_env);
-    free(contents);
     return 0;
 }
 
