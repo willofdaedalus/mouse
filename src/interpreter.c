@@ -43,22 +43,17 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
                 skip_to(contents, &pos, 0, '\n');
                 break;
 
-            case '(':
-                push(env->loop_stack, pos);
-                break;
-
-            case '^':
-                if (pop(env->global_stack) <= 0)
-                {
-                    skip_to(contents, &pos, '(', ')');
-                }
-                break;
-
-            case ')':
-                pos = pop(env->loop_stack) - 1;
+            /* loop operators to start, break and continue a loop */
+            case '^': case '(': case ')': 
+                handle_loop(c, contents, &pos, &env);
                 break;
 
             case '[':   /* conditional operator */
+                /* pre-scan into the conditional if it's true to check
+                 * for an else operator and the number before entering
+                 * into the conditional statement itself to determine
+                 * where we start from
+                 */
                 if (pop(env->global_stack) <= 0)
                 {
                     skip_to(contents, &pos, '[', ']');
@@ -68,33 +63,34 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
             case ']':
                 break;
 
+            /* push the ascii code of the next character to the stack */
+            case '\'':
+                push(env->global_stack, (int)contents[++pos]);
+                break;
+
+            /* comparison operators */
             case '<': case '=': case '>':
                 handle_comparison(c, &env->global_stack);
                 break;
 
+            /* assignment and fetch operators */
             case ':': case '.':
                 handle_alloc(c, &env);
                 break;
 
+            /* math operators */
             case '+': case '*': case '-': case '/': case '\\':
                 handle_math(c, &env->global_stack);
                 break;
 
+            /* read and write operators */
             case '!': case '?':
                 prime = (contents[pos + 1] == '\'');
                 handle_io(c, &env->global_stack, prime);
                 pos += prime; /* skip the prime if it's present */
                 break;
 
-            case ' ': case '\n':
-                pos += 1; /* this might be problematic */
-                continue;
-
-            case '\'':
-                pos++;
-                push(env->global_stack, (int)contents[pos]);
-                break;
-
+            /* string printing operators */
             case '"':
                 pos++; /* skip the current character to read from the next */
                 while (contents[pos] != '"')
@@ -107,6 +103,10 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env)
                     pos++;
                 }
                 break;
+
+            case ' ': case '\n': case '|':
+                pos += 1; /* this might be problematic */
+                continue;
 
             default:
                 continue;
@@ -341,12 +341,34 @@ void skip_to(const char *buf, size_t *pos, const char from, const char to)
     }
 }
 
-
-void handle_loop(const char *buf, size_t *pos, environment **env)
+/**
+ * handles operators needed to make loops work
+ *
+ * @c: the current char
+ * @buf: the contents of the src file
+ * @pos: a pointer to the current position
+ * @env: the environment
+ */
+void handle_loop(const char c, const char *buf, size_t *pos, environment **env)
 {
-    (void)buf;
-    push((*env)->loop_stack, *pos);
-    /** save the position of the character for easier comeback
-     * run whatever is in the loop  pv
-     */
+    switch (c)
+    {
+         /* exits a for loop when the value on the stack is 0 */
+        case '^':
+            if (pop((*env)->global_stack) <= 0)
+            {
+                skip_to(buf, pos, '(', ')');
+            }
+            break;
+
+        /* begins a loop */
+        case '(':
+            push((*env)->loop_stack, *pos);
+            break;
+
+        /* goes back to the start of the loop */
+        case ')':
+            *pos = pop((*env)->loop_stack) - 1;
+            break;
+    }
 }
