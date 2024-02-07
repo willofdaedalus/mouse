@@ -97,6 +97,7 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
                 prime = (contents[pos + 1] == '\'');
                 handle_io(c, &env->global_stack, prime);
                 pos += prime; /* skip the prime if it's present */
+                putchar('\n');
                 break;
 
             /* string printing operators */
@@ -118,7 +119,7 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
                 continue;
 
             default:
-                continue;
+                break;
         }
 
         pos++;

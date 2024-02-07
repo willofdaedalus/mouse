@@ -21,7 +21,7 @@ void init_shell()
 
     while (true)
     {
-        printf("\n"PROMPT);
+        printf(PROMPT);
         if ((getline(&buf, &size, stdin) == -1))
         {
             break;
