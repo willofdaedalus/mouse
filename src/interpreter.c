@@ -33,6 +33,7 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
     {
         prime = false;
         c = contents[pos];
+        //printf("%c", contents[pos]);
 
         if (isdigit(c))
         {
@@ -43,7 +44,6 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
         {
             int value = c - ASCII_OFFSET;
             push(env->global_stack, value);
-            pos++;
         }
 
         switch (c)
@@ -114,7 +114,7 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
                 }
                 break;
 
-            case ' ': case '\n': case '|':
+            case ' ': case '\n':
                 pos += 1; /* this might be problematic */
                 continue;
 
@@ -315,18 +315,20 @@ void handle_alloc(char c, environment **env)
  */
 void handle_comparison(char c, stack **stack)
 {
-    int rhs = pop(*stack), lhs = pop(*stack);
+    int rhs = 0;
 
     switch(c)
     {
         case '>':
-            push(*stack, (lhs > rhs) ? 1 : 0);
+            rhs = pop(*stack);
+            push(*stack, (pop(*stack) > rhs) ? 1 : 0);
             break;
         case '<':
-            push(*stack, (lhs < rhs) ? 1 : 0);
+            rhs = pop(*stack);
+            push(*stack, (pop(*stack) < rhs) ? 1 : 0);
             break;
         case '=':
-            push(*stack, (lhs == rhs) ? 1 : 0);
+            push(*stack, (pop(*stack) == pop(*stack)) ? 1 : 0);
             break;
     }
 }

@@ -51,6 +51,7 @@ void free_env(environment *env)
         env->variables[i] = 0;
 
     free(env->global_stack);
+    free(env->loop_stack);
     free(env);
 }
 
@@ -90,7 +91,10 @@ void push(stack *stack, const int value)
         printf("this should be an error for stack overflow\n");
 
         if (shell_mode == 1)
+        {
+            printf("running in shell mode");
             return;
+        }
 
         exit(EXIT_FAILURE);
     }
