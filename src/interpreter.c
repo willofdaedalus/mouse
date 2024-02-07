@@ -3,8 +3,10 @@
 #include "utils.h"
 
 #include <ctype.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 int shell_mode = 0;
 
@@ -157,6 +159,9 @@ void handle_math(const char c, stack **stack)
 {
     int rhs = pop(*stack), lhs = pop(*stack);
 
+    if (lhs == INT_MIN || rhs == INT_MIN)
+        return;
+
     /* aside the commutative properties of * and + the others
      * need special checks to make sure they function the way
      * they're supposed to
@@ -179,7 +184,10 @@ void handle_math(const char c, stack **stack)
             /* in case the divisor is 0 we throw a division by zero error */
             if (rhs == 0)
             {
-                printf("can't divide by zero\n");
+                printf("can't divide by zero");
+                if (shell_mode == 1)
+                    return;
+
                 exit(EXIT_FAILURE);
             }
 
@@ -190,7 +198,10 @@ void handle_math(const char c, stack **stack)
             /* in case the divisor is 0 we throw a division by zero error */
             if (rhs == 0)
             {
-                printf("can't divide by zero\n");
+                printf("can't divide by zero");
+                if (shell_mode == 1)
+                    return;
+
                 exit(EXIT_FAILURE);
             }
 
@@ -211,6 +222,11 @@ void handle_math(const char c, stack **stack)
 void handle_io(char c, stack **stack, bool prime)
 {
     int from = 0;
+    char character = 0;
+    int value = 0;
+    /* 25 to account for the lenght of INT_MAX */
+    char input[25];
+
     switch(c)
     {
         /* operator that writes to stdout */
@@ -220,11 +236,19 @@ void handle_io(char c, stack **stack, bool prime)
                 /* chose to use printf instead of putchar for single
                  * character to maintain consistency with %d formatter
                  */
-                printf("%c", pop(*stack));
+                value = pop(*stack);
+                if (value == INT_MIN)
+                    return;
+
+                printf("%c", value);
             }
             else
             {
-                printf("%d", pop(*stack));
+                value = pop(*stack);
+                if (value == INT_MIN)
+                    return;
+
+                printf("%d", value);
             }
             break;
 
@@ -232,16 +256,18 @@ void handle_io(char c, stack **stack, bool prime)
         case '?':
             if (prime)
             {
-                char character = 0;
                  /* Good God I love this language lol
                  * https://stackoverflow.com/a/69587510
                  */
-                scanf(" %c", &character);
+                fgets(input, 2, stdin);
+                input[strcspn(input, "\n")] = '\0';
+                sscanf(input, "%c", &character);
                 push(*stack, (int)character);
             }
             else
             {
-                scanf(" %d", &from);
+                fgets(input, 25, stdin);
+                sscanf(input, "%d", &from);
                 push(*stack, from);
             }
             break;
@@ -343,7 +369,11 @@ void skip_to(const char *buf, size_t *pos, const char from, const char to)
 
     if (err == 1)
     {
-        printf("incomplete number of brackets\n");
+        printf("incomplete number of brackets");
+
+        if (shell_mode == 1)
+            return;
+
         exit(EXIT_FAILURE);
     }
 }
