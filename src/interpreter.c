@@ -24,12 +24,11 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
      * depending on if it's called from the shell or if it's called from
      * a file loaded into memory
      */
-    char sentinel_value = shell_mode == 1 ? '\n' : '$';
     char c = 0;
     size_t pos = 0;
     bool prime = false;
 
-    while (c != sentinel_value)
+    while (c != '$')
     {
         prime = false;
         c = contents[pos];
@@ -37,6 +36,7 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
 
         if (isdigit(c))
         {
+            printf("found %c at %lu\n", c, pos);
             handle_digits(contents, &env->global_stack, &pos, file_len);
         }
 
@@ -146,6 +146,8 @@ void handle_digits(const char *buf, stack **stack, size_t *pos, size_t len)
         temp = temp * 10 + (buf[*pos] - '0');
         *pos += 1;
     }
+
+    printf("%d\n", temp);
 
     push(*stack, temp);
 }
