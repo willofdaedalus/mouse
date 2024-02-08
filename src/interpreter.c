@@ -1,5 +1,6 @@
-#include "interpreter.h"
 #include "environment.h"
+#include "error.h"
+#include "interpreter.h"
 #include "utils.h"
 
 #include <ctype.h>
@@ -36,7 +37,8 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
 
         if (isdigit(c))
         {
-            printf("found %c at %lu\n", c, pos);
+            //printf("\n%c", contents[pos]);
+            //printf("found %c at %lu\n", c, pos);
             handle_digits(contents, &env->global_stack, &pos, file_len);
         }
 
@@ -124,6 +126,14 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
 
         pos++;
     }
+
+    /*
+    if (pos == file_len)
+    {
+        print_error(EOF_REACHED);
+        return;
+    }
+    */
 }
 
 /**
@@ -147,7 +157,10 @@ void handle_digits(const char *buf, stack **stack, size_t *pos, size_t len)
         *pos += 1;
     }
 
-    printf("%d\n", temp);
+    /* move back to allow the interpreter to parse the next character 
+     * when this function hands control back to begin_interpreter
+     */
+    *pos -= 1;
 
     push(*stack, temp);
 }
@@ -187,7 +200,7 @@ void handle_math(const char c, stack **stack)
             /* in case the divisor is 0 we throw a division by zero error */
             if (rhs == 0)
             {
-                printf("can't divide by zero");
+                print_error(DIVISION_BY_ZERO);
                 if (shell_mode == 1)
                     return;
 
@@ -201,7 +214,7 @@ void handle_math(const char c, stack **stack)
             /* in case the divisor is 0 we throw a division by zero error */
             if (rhs == 0)
             {
-                printf("can't divide by zero");
+                print_error(DIVISION_BY_ZERO);
                 if (shell_mode == 1)
                     return;
 
@@ -374,7 +387,7 @@ void skip_to(const char *buf, size_t *pos, const char from, const char to)
 
     if (err == 1)
     {
-        printf("incomplete number of brackets");
+        print_error(INCOMPLETE_BRACKETS);
 
         if (shell_mode == 1)
             return;

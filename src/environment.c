@@ -1,4 +1,5 @@
 #include "environment.h"
+#include "error.h"
 
 #include <limits.h>
 #include <stdio.h>
@@ -88,7 +89,7 @@ void push(stack *stack, const int value)
     /* check for a possible stack overflow */
     if (stack->cur_stack_size == MAX_STACK_SIZE)
     {
-        printf("this should be an error for stack overflow\n");
+        print_error(STACK_OVERFLOW);
 
         if (shell_mode == 1)
         {
@@ -120,7 +121,7 @@ int pop(stack *stack)
     if (stack->cur_stack_size == 0 || 
             stack->items[stack->cur_stack_size - 1] == INT_MIN)
     {
-        printf("this should be an error for stack underflow");
+        print_error(STACK_UNDERFLOW);
 
         /* we use INT_MIN as the sentinel value for checking overflows and
          * underflows in the program. if the user manages to trigger it
