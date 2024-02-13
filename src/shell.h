@@ -4,5 +4,6 @@
 #define PROMPT                                      ">>> "
 
 void init_shell(void);
+void handle_builtin(char *cmd);
 
 #endif

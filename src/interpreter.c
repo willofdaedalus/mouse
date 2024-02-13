@@ -71,6 +71,10 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
                 }
                 break;
 
+            case '|':
+                skip_to(contents, &pos, '[', ']');
+                break;
+
             case ']':
                 break;
 
@@ -121,6 +125,10 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
                 continue;
 
             default:
+                /*
+                print_error(ILLEGAL_CHARACTER);
+                exit(EXIT_FAILURE);
+                */
                 break;
         }
 
