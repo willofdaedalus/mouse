@@ -34,7 +34,7 @@ arrays, pointers and more.
 | ?'       | Input operator that reads a single character from stdin                                                            |
 | !        | Output operator that pops the Stack and prints the number                                                          |
 | !'       | Output operator that pops the Stack and prints the ASCII representation of the value                               |
-| '<char>  | Push operator that pushes the ASCII value of the next character to the Stack                                       |
+| '(char)  | Push operator that pushes the ASCII value of the next character to the Stack                                       |
 | "        | Output operator that prints anything up to the next " operator                                                     |
 | <letter> | Gets the variable address of the letter                                                                            |
 | :        | Assignment operator that assigns a value to a variable                                                             |
@@ -46,7 +46,7 @@ arrays, pointers and more.
 | ]        | Conditional end operator                                                                                           |
 | ^        | Break operator that exits a loop if the value of the Stack is false                                                |
 | ~        | Comment operator                                                                                                   |
-| <number> | Pushes a number on to the Stack                                                                                    |
+| (number) | Pushes a number on to the Stack                                                                                    |
 
 NB: There are other operators for Mouse but these core operators have been implemented into this version.
 
@@ -56,17 +56,34 @@ To illustrate how the Stack works, the following is a demonstration of adding tw
 in Mouse. To compute ``17 + 56`` in Mouse, the following code is necessary along with
 diagrams.
 
-`` 17 56 + ! $ ``
+`` 17 56 + ``
 
-| Current Character | Top 0 | Top 1 | Top 2 | Description                                                            |
-| ----------------- | ----- | ----- | ----- | ---------------------------------------------------------------------- |
-| 17                | 17    |       |       | Put 17 on the Stack                                                    |
-| 56                | 56    | 17    |       | Put 56 on the Stack. This moves 17 to the next space making 56 the Top |
-| +                 | 73    |       |       | Add the numbers in Top 0 and Top 1 put the result in Top 0             |
-| !                 |       |       |       | This removes Top 0 and prints it to the stdout                         |
-| $                 |       |       |       | This signals to the interpreter to exit                                |
+| Current Character | Top 0 | Top 1 | Description                                                            |
+| ----------------- | ----- | ----- | ---------------------------------------------------------------------- |
+| 17                | 17    |       | Put 17 on the Stack                                                    |
+| 56                | 56    | 17    | Put 56 on the Stack. This moves 17 to the next space making 56 the Top |
+| +                 | 73    |       | Add the numbers in Top 0 and Top 1 put the result in Top 0             |
 
+   
+Because of the advantages RPN provides a complex expression such as  
+(22 + 36)  * (60 / 10)  
+could be written in RPN as:
+``22 36 + 60 10 / *``
+
+| Current Character | Top 0 | Top 1 | Top 2 | Description                                                                                     |
+| ----------------- | ----- | ----- | ----- | -----------                                                                                     |
+| 22                | 22    |       |       | Put 22 on the Stack                                                                             |
+| 36                | 36    | 22    |       | Put 36 on the Stack pushing 22 lower                                                            |
+| +                 | 58    |       |       | Add the top two values and put their result on the Stack                                        |
+| 60                | 60    | 58    |       | Put 60 on the Stack pushing 58 lower                                                            |
+| 10                | 10    | 60    | 58    | Put 10 on the Stack further pushing the already existing numbers lower                          |
+| /                 | 6     | 58    |       | Divide pops the top two values, divides them and pushes the result on the Stack                 |
+| *                 | 348   |       |       | Multiply takes the top two numbers and multiplies them together pushing the result on the Stack |
 
 
 ## Common Expressions
 Below are some common expressions in Mouse
+``
+12 X:                                   ~ assigns 12 to the variable X
+X.                                      ~ dereference or recall the value of X
+X. 1 + X:                               ~ dereferences X and adds one to the value
