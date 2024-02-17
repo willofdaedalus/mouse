@@ -1,1 +1,1 @@
-This is the Mouse programming language interpreter
+![plot](./assets/banner.png)
