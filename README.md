@@ -23,6 +23,7 @@ arrays, pointers and more.
 
 ## Operators in Mouse
 | Operator | Function                                                                                                           |
+| -------- | ------------------------------------------------------------------------------------------------------------------ |
 | $        | This signals the end of the file stream and tells the interpreter to exit                                          |
 | +        | Plus operator that pops two values from the Stack, adds them and pushes the result back to the Stack               |
 | -        | Minus operator that pops two values from the Stack, subtracts them and pushes the result back to the Stack         |
@@ -58,6 +59,7 @@ diagrams.
 `` 17 56 + ! $ ``
 
 | Current Character | Top 0 | Top 1 | Top 2 | Description                                                            |
+| ----------------- | ----- | ----- | ----- | ---------------------------------------------------------------------- |
 | 17                | 17    |       |       | Put 17 on the Stack                                                    |
 | 56                | 56    | 17    |       | Put 56 on the Stack. This moves 17 to the next space making 56 the Top |
 | +                 | 73    |       |       | Add the numbers in Top 0 and Top 1 put the result in Top 0             |
