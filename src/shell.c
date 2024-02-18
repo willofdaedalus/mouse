@@ -64,10 +64,14 @@ void init_shell()
             char *new_buf = malloc(buf_len + 2);
             if (new_buf == NULL)
                 continue;
+
             /* Append '$' and null-terminate */
-            snprintf(new_buf, buf_len + 2, "%s$", buf);
+            new_buf = strndup(buf, strlen(buf));
+            strcat(new_buf, "$\0");
+            //snprintf(new_buf, buf_len + 2, "%s$", buf);
             begin_interpreter(new_buf, strlen(new_buf), shell_env, 1);
 
+            putchar('\n');
             free(new_buf);
         }
     }

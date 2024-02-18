@@ -66,12 +66,12 @@ diagrams.
 
    
 Because of the advantages RPN provides a complex expression such as  
-(22 + 36)  * (60 / 10)  
-could be written in RPN as:
+``(22 + 36)  * (60 / 10)``  
+could be written in RPN as:  
 ``22 36 + 60 10 / *``
 
 | Current Character | Top 0 | Top 1 | Top 2 | Description                                                                                     |
-| ----------------- | ----- | ----- | ----- | -----------                                                                                     |
+| ----------------- | ----- | ----- | ----- | ----------------------------------------------------------------------------------------------- |
 | 22                | 22    |       |       | Put 22 on the Stack                                                                             |
 | 36                | 36    | 22    |       | Put 36 on the Stack pushing 22 lower                                                            |
 | +                 | 58    |       |       | Add the top two values and put their result on the Stack                                        |
@@ -82,8 +82,14 @@ could be written in RPN as:
 
 
 ## Common Expressions
-Below are some common expressions in Mouse
-``
-12 X:                                   ~ assigns 12 to the variable X
-X.                                      ~ dereference or recall the value of X
-X. 1 + X:                               ~ dereferences X and adds one to the value
+Below are some common expressions in Mouse and their equivalent in the C programming
+language and in Python.  
+
+| Mouse Expression | C Expression                           | Python Expression       | Description                              |
+| ---------------- | ------------------                     | -----------------       | ---------------------------------------- |
+| 54 N:            | int n = 54;                            | n = 54                  | Assign the value of the variable N to 54 |
+| N. !             | printf("%d\n", n);                     | print(n)                | Recall and print the value of N          |
+| Y. X:            | int x = y;                             | x = y                   | Copy the value of Y into X               |
+| N. 1 + N:        | int n += 1;                            | n += 1                  | Increment the value of N by 1            |
+| N. N. * N:       | int n *= n;                            | n *= n                  | Store the square of N into N             |
+| X. Y. X: Y:      | int temp = x;\int x = y;\int y = temp; | temp = x\x = y\y = temp | Swap the values of x and y               |

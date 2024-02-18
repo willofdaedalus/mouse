@@ -10,6 +10,7 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
 
 /* handlers */
 void handle_alloc(const char c, environment **env);
+void handle_string(const char *buf, size_t *pos);
 void skip_to(const char *buf, size_t *pos, const char from, const char to);
 void handle_loop(const char c, const char *buf, size_t *pos, environment **env);
 void handle_comparison(const char c, stack **stack);

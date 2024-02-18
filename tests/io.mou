@@ -1,5 +1,2 @@
-~ num.mse
-0 A:
-(A. 12 > 30 A. > * 0 = ^
- "!please enter a number between 13 and 29 (inclusive) : " ? A:)
-"!you entered the number " A. ! "." $
+"hello world"
+$

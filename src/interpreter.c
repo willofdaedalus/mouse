@@ -33,7 +33,7 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
     {
         prime = false;
         c = contents[pos];
-        //printf("%c", contents[pos]);
+        //printf("current char: %c\n", contents[pos]);
 
         if (isdigit(c))
         {
@@ -109,15 +109,8 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
             /* string printing operators */
             case '"':
                 pos++; /* skip the current character to read from the next */
-                while (contents[pos] != '"')
-                {
-                    if (contents[pos] == '!')
-                        putchar('\n');
-                    else
-                        putchar(contents[pos]);
-
-                    pos++;
-                }
+                handle_string(contents, &pos);
+                pos++;
                 break;
 
             case ' ': case '\n':
@@ -142,6 +135,25 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
         return;
     }
     */
+}
+
+/**
+ * handles string printing
+ *
+ * @buf: the current source file in memory
+ * @pos: the current position in the source file
+ */
+void handle_string(const char *buf, size_t *pos)
+{
+    while (buf[*pos] != '"')
+    {
+        if (buf[*pos] == '!')
+            putchar('\n');
+        else
+            putchar(buf[*pos]);
+
+        *pos += 1;
+    }
 }
 
 /**
