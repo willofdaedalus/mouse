@@ -1,5 +1,8 @@
 ![plot](./assets/banner.png)
 
+## Authors
+[Manny Quansah](https://www.linkedin.com/in/IamDaedalus)
+
 ## Mouse-83 Interpreter
 Mouse is a small programming language developed by Dr Peter Grogono in the late
 70s and early 80s as an extension of an earlier language called MUSYS which was
@@ -19,6 +22,28 @@ to a specific function predefined in the interpreter. There are only 26 in built
 variables (A - Z) since there's a rule of single character symbols as operators.
 Despite the limitations Mouse is complete with conditional statements, loops,
 arrays, pointers and more.
+
+
+## Installation
+To install the Mouse interpreter, you need the following installed on your system;  
+* gcc
+* git
+
+Consult your local package manager on instructions to install them. Once you have
+them installed run the following commands in your terminal of choice.
+
+``
+git clone https://github.com/IamDaedalus/mouse
+cd mouse
+gcc -Wall -pedantic -Werror -Wextra -std=gnu99 src/*.c -o
+``
+
+This will compile and generate a binary that is ready to use.
+To use Mouse on any of the sample code, you can run the binary and the path of the
+source file you want to run. For instance to run the source file ``samples/age_calc.mou``,
+you need to run the following command:
+
+``./mouse samples/age_calc.mou``
 
 
 ## Operators in Mouse
@@ -85,11 +110,13 @@ could be written in RPN as:
 Below are some common expressions in Mouse and their equivalent in the C programming
 language and in Python.  
 
-| Mouse Expression | C Expression                           | Python Expression       | Description                              |
-| ---------------- | ------------------                     | -----------------       | ---------------------------------------- |
-| 54 N:            | int n = 54;                            | n = 54                  | Assign the value of the variable N to 54 |
-| N. !             | printf("%d\n", n);                     | print(n)                | Recall and print the value of N          |
-| Y. X:            | int x = y;                             | x = y                   | Copy the value of Y into X               |
-| N. 1 + N:        | int n += 1;                            | n += 1                  | Increment the value of N by 1            |
-| N. N. * N:       | int n *= n;                            | n *= n                  | Store the square of N into N             |
-| X. Y. X: Y:      | int temp = x;\int x = y;\int y = temp; | temp = x\x = y\y = temp | Swap the values of x and y               |
+| Mouse Expression | Description                                  |
+| ---------------- | ---------------------------------------- |
+| 54 N:            | Assign the value of the variable N to 54 |
+| N. !             | Recall and print the value of N          |
+| Y. X:            | Copy the value of Y into X               |
+| N. 1 + N:        | Increment the value of N by 1            |
+| N. N. * N:       | Store the square of N into N             |
+| X. Y. X: Y:      | Swap the values of x and y               |
+| ?!               | Read a number and print it immediately   |
+

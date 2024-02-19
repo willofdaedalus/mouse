@@ -17,14 +17,12 @@ int shell_mode = 0;
  * @contents: the source file buffer as a string
  * @file_len: the length of the file or number of bytes in the source file
  * @stack: the general stack
+ * @shell: this flag changes the behaviour of the interpreter depending on if
+ * it's running in a shell or running a source file
  */
 void begin_interpreter(const char *contents, size_t file_len, environment *env, int shell)
 {
     shell_mode = shell;
-    /* this char will determine what is the 'ending' point for the interpreter
-     * depending on if it's called from the shell or if it's called from
-     * a file loaded into memory
-     */
     char c = 0;
     size_t pos = 0;
     bool prime = false;
@@ -36,11 +34,7 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
         //printf("current char: %c\n", contents[pos]);
 
         if (isdigit(c))
-        {
-            //printf("\n%c", contents[pos]);
-            //printf("found %c at %lu\n", c, pos);
             handle_digits(contents, &env->global_stack, &pos, file_len);
-        }
 
         if (c >= 'A' && c <= 'Z')
         {
@@ -71,13 +65,14 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
                 }
                 break;
 
-            case '|':
-                skip_to(contents, &pos, '[', ']');
-                break;
-
             case ']':
                 break;
 
+            /* 
+            case '|':
+                skip_to(contents, &pos, '[', ']');
+                break;
+            */
             /* push the ascii code of the next character to the stack */
             case '\'':
                 push(env->global_stack, (int)contents[++pos]);
@@ -103,14 +98,13 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
                 prime = (contents[pos + 1] == '\'');
                 handle_io(c, &env->global_stack, prime);
                 pos += prime; /* skip the prime if it's present */
-                //putchar('\n');
                 break;
 
             /* string printing operators */
             case '"':
-                pos++; /* skip the current character to read from the next */
+                pos += 1; /* skip the current character to read from the next */
                 handle_string(contents, &pos);
-                pos++;
+                pos += 1;
                 break;
 
             case ' ': case '\n':
@@ -118,24 +112,19 @@ void begin_interpreter(const char *contents, size_t file_len, environment *env, 
                 continue;
 
             default:
-                /*
-                print_error(ILLEGAL_CHARACTER);
-                exit(EXIT_FAILURE);
-                */
                 break;
         }
 
-        pos++;
+        pos += 1;
     }
-
-    /*
-    if (pos == file_len)
-    {
-        print_error(EOF_REACHED);
-        return;
-    }
-    */
 }
+
+/*
+size_t handle_else_operator(char *buf, size_t *pos)
+{
+    int inside_string = 0;
+}
+*/
 
 /**
  * handles string printing
@@ -292,9 +281,6 @@ void handle_io(char c, stack **stack, bool prime)
         case '?':
             if (prime)
             {
-                 /* Good God I love this language lol
-                 * https://stackoverflow.com/a/69587510
-                 */
                 fgets(input, 2, stdin);
                 input[strcspn(input, "\n")] = '\0';
                 sscanf(input, "%c", &character);
@@ -302,6 +288,7 @@ void handle_io(char c, stack **stack, bool prime)
             }
             else
             {
+                /* read length of INT_MAX digit length into input */
                 fgets(input, 25, stdin);
                 sscanf(input, "%d", &from);
                 push(*stack, from);
