@@ -1,5 +1,6 @@
-# MOUSE-83
+## **NB: All development is happening in the working branch as master only contains "stable" code.**
 
+# MOUSE-83
 ## What is Mouse?
 Mouse is small and efficient microcontroller programming language developed the
 late 70s by Professor Peter Grogono. It was developed as an extension for an earlier
