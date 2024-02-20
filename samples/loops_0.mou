@@ -1,0 +1,4 @@
+10 N: ( N. 1 > ^ "HELLO WORLD!" N. 1 - N: )
+~ prints "Hello, World" 10 times
+$
+

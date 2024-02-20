@@ -1,0 +1,9 @@
+~ prints the square of every number from 1 to 100
+
+1 N:
+(
+            N. 101 < ^ 
+            N. N. * ! " " N. 1 + N:
+)
+"!"
+$

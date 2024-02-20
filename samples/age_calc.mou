@@ -1,0 +1,7 @@
+~ this takes the birth year of the user and calculates their age
+
+2024A:
+"Please enter the year you were born: "  ? B:
+A.B.-C:
+"You're " C.! " years old based on your year.!"
+$

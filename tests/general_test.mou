@@ -1,0 +1,5 @@
+0 M:
+( 0 N: "entering inner loop!"
+
+"!  " M. 5 < ^ M. 1 + M: " " ) "!"
+$
