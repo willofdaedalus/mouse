@@ -3,5 +3,6 @@
 2024A:
 "Please enter the year you were born: "  ? B:
 A.B.-C:
-"You're " C.! " years old based on your year.!"
+C. 0 < [ "what are you? a time traveller?" ]
+C. 0 > [ "You're " C.! " years old based on your year.!" ]
 $

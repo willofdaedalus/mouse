@@ -1,5 +1,6 @@
 0 M:
 ( 0 N: "entering inner loop!"
-
+( M. N. * ! " "
+N. 5 < ^ N. 1 + N: " " )
 "!  " M. 5 < ^ M. 1 + M: " " ) "!"
 $

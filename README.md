@@ -35,7 +35,7 @@ them installed run the following commands in your terminal of choice.
 ```
 git clone https://github.com/IamDaedalus/mouse
 cd mouse
-gcc -Wall -pedantic -Werror -Wextra -std=gnu99 src/*.c -o
+gcc -Wall -pedantic -Werror -Wextra -std=gnu99 src/*.c -o mouse
 ```
 
 This will compile and generate a binary that is ready to use.
@@ -49,6 +49,7 @@ you need to run the following command:
 
 
 ## Operators in Mouse
+
 | Operator | Function                                                                                                           |
 | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | $        | This signals the end of the file stream and tells the interpreter to exit                                          |
@@ -83,7 +84,9 @@ To illustrate how the Stack works, the following is a demonstration of adding tw
 in Mouse. To compute ``17 + 56`` in Mouse, the following code is necessary along with
 diagrams.
 
-`` 17 56 + ``
+```
+17 56 +
+```
 
 | Current Character | Top 0 | Top 1 | Description                                                            |
 | ----------------- | ----- | ----- | ---------------------------------------------------------------------- |
@@ -93,9 +96,16 @@ diagrams.
 
    
 Because of the advantages RPN provides a complex expression such as  
-``(22 + 36)  * (60 / 10)``  
+
+```
+(22 + 36)  * (60 / 10)
+```
+
 could be written in RPN as:  
-``22 36 + 60 10 / *``
+
+```
+22 36 + 60 10 / *
+```
 
 | Current Character | Top 0 | Top 1 | Top 2 | Description                                                                                     |
 | ----------------- | ----- | ----- | ----- | ----------------------------------------------------------------------------------------------- |
