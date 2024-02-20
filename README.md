@@ -32,18 +32,20 @@ To install the Mouse interpreter, you need the following installed on your syste
 Consult your local package manager on instructions to install them. Once you have
 them installed run the following commands in your terminal of choice.
 
-``
+```
 git clone https://github.com/IamDaedalus/mouse
 cd mouse
 gcc -Wall -pedantic -Werror -Wextra -std=gnu99 src/*.c -o
-``
+```
 
 This will compile and generate a binary that is ready to use.
 To use Mouse on any of the sample code, you can run the binary and the path of the
 source file you want to run. For instance to run the source file ``samples/age_calc.mou``,
 you need to run the following command:
 
-``./mouse samples/age_calc.mou``
+```
+./mouse samples/age_calc.mou
+```
 
 
 ## Operators in Mouse
@@ -119,4 +121,14 @@ language and in Python.
 | N. N. * N:       | Store the square of N into N             |
 | X. Y. X: Y:      | Swap the values of x and y               |
 | ?!               | Read a number and print it immediately   |
+| 3 4 < [ "true" ] | Prints "true" because 3 < 4              |
 
+
+## Contributing
+All contributions are welcome! I implore anyone who is interested and has something to
+contribute to please do so. I'm still learning the C programming language and as such
+am open to suggestions and contributions.
+
+To contribute please create a fork, make your changes and then create a pull request
+detailing what you've done and why. I appreciate any contributions to this project.  
+Thank you!
